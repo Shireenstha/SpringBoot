@@ -68,4 +68,5 @@ public class PatientController {
         patients.removeIf(p -> p.getId() == id);  
         return "redirect:/patient-list";  
     }
+    
 }

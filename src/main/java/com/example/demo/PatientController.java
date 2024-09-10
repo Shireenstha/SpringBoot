@@ -59,7 +59,7 @@ public class PatientController {
             patient.setEmail(email);
             patient.setPassword(password);
         }
-        return "redirect:/patient-list";  
+        return "redirect:/patient-ligist";  
     }
 
     

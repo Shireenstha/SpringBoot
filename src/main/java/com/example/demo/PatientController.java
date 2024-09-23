@@ -1,72 +1,58 @@
 package com.example.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class PatientController {
 
-    private final List<Patient> patients = new ArrayList<>();
+    @Autowired
+    private PatientService patientService;
 
-   
     @GetMapping("/index")
     public String indexPage() {
-        return "index";  
+        return "index";
     }
 
-    
     @GetMapping("/register")
-    public String registerPage() {
-        return "register";  
+    public String registerPage(Model model) {
+        model.addAttribute("patient", new Patient()); // Initialize a new Patient object
+        return "register";
     }
 
-    
     @PostMapping("/submit-register")
-    public String submitRegister(@RequestParam String name, @RequestParam String email, @RequestParam String id, @RequestParam String password) {
-        Patient newPatient = new Patient(patients.size() + 1, name, email, id, password);
-        patients.add(newPatient);
-        return "redirect:/patient-list";  
+    public String submitRegister(@ModelAttribute Patient newPatient) {
+        patientService.savePatient(newPatient);
+        return "redirect:/patient-list";
     }
 
-    
     @GetMapping("/patient-list")
     public String patientListPage(Model model) {
-        model.addAttribute("patients", patients);  
-        return "patient-list";  
+        model.addAttribute("patients", patientService.getAllUsers());
+        return "patient-list";
     }
 
-    
     @GetMapping("/editpatientdetails/{id}")
     public String editPatientForm(@PathVariable int id, Model model) {
-        Patient patient = patients.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
+        Patient patient = patientService.getPatientById(id);
         if (patient != null) {
-            model.addAttribute("patient", patient);  
-            return "editpatientdetails";  
+            model.addAttribute("patient", patient);
+            return "editpatientdetails";
         }
-        return "redirect:/patient-list";  
+        return "redirect:/patient-list";
     }
 
-    
     @PostMapping("/edit-patient")
-    public String editPatient(@RequestParam int id, @RequestParam String name, @RequestParam String email, @RequestParam String password) {
-        Patient patient = patients.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
-        if (patient != null) {
-            patient.setName(name);
-            patient.setEmail(email);
-            patient.setPassword(password);
-        }
-        return "redirect:/patient-ligist";  
+    public String editPatient(@ModelAttribute Patient patient) {
+        patientService.updatePatient(patient.getId(), patient.getName(), patient.getEmail(), patient.getPassword());
+        return "redirect:/patient-list";
     }
 
-    
     @GetMapping("/deletepatient/{id}")
     public String deletePatient(@PathVariable int id) {
-        patients.removeIf(p -> p.getId() == id);  
-        return "redirect:/patient-list";  
+        patientService.deletePatient(id);
+        return "redirect:/patient-list";
     }
-    
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +8,18 @@
 </head>
 <body>
     <h1>Register New Patient</h1>
-    <form action="/submit-register" method="POST">
+    <form th:action="@{/submit-register}" th:object="${patient}" method="POST">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+        <input type="text" id="name" th:field="*{name}" required><br>
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
-
-        <label for="id">Patient ID:</label>
-        <input type="text" id="id" name="id" required><br>
+        <input type="email" id="email" th:field="*{email}" required><br>
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+        <input type="password" id="password" th:field="*{password}" required><br>
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
 
         <button type="submit">Register</button>
     </form>

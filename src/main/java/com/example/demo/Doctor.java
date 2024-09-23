@@ -1,15 +1,13 @@
 package com.example.demo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
-public class Patient {
+@Table(name = "doctors", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,20 +16,27 @@ public class Patient {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
-    @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
-    private String password;
+    @NotBlank(message = "Specialization is mandatory")
+    private String specialization;
 
-    public Patient() {}
+    @Pattern(regexp = "^\\+?[0-9. ()-]{7,}$", message = "Phone number should be valid")
+    private String phone;
 
-    public Patient(int id, String name, String email, String password) {
+    private String password; 
+
+  
+    public Doctor() {}
+
+  
+    public Doctor(int id, String name, String email, String specialization, String phone, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.specialization = specialization;
+        this.phone = phone;
         this.password = password;
     }
 
@@ -57,6 +62,22 @@ public class Patient {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {
